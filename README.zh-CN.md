@@ -1,5 +1,9 @@
 # subglot
 
+[![CI](https://github.com/roclee0703/subglot/actions/workflows/ci.yml/badge.svg)](https://github.com/roclee0703/subglot/actions/workflows/ci.yml)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
 **本地优先的字幕转写与翻译流水线。** Whisper 在你自己的机器上跑，翻译走任意
 OpenAI 兼容 API（OpenAI、Azure、自托管 vLLM 均可）。本项目在一条真实生产的
 短视频字幕流水线上长期使用、持续打磨。

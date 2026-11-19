@@ -1,5 +1,9 @@
 # subglot
 
+[![CI](https://github.com/roclee0703/subglot/actions/workflows/ci.yml/badge.svg)](https://github.com/roclee0703/subglot/actions/workflows/ci.yml)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
 **Local-first subtitle transcription and translation.** Whisper runs on your
 machine; translation goes through any OpenAI-compatible API (OpenAI, Azure,
 self-hosted vLLM, ...). Built and battle-tested on a real production
