@@ -30,7 +30,8 @@ dependencies = [
 # NOTE: faster-whisper (as of 1.2.1) passes metadata_errors= to av.open(),
 # which PyAV removed in 15.x -- pin av below that until faster-whisper adapts.
 asr = ["faster-whisper>=1.0", "av>=11,<15"]
-dev = ["pytest>=8", "faster-whisper>=1.0", "av>=11,<15"]
+dev = ["pytest>=8"]
+test = ["pytest>=8"]
 
 [project.scripts]
 subglot = "subglot.cli:main"
