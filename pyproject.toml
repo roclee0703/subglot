@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "subglot"
-version = "0.1.0"
+version = "0.1.1"
 description = "Local-first subtitle transcription and translation pipeline: Whisper on your machine, LLM translation via any OpenAI-compatible API."
 readme = "README.md"
 requires-python = ">=3.9"

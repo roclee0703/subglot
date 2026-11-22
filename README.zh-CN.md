@@ -43,12 +43,15 @@ subglot translate talk.srt -o talk.zh.srt --target "Chinese (Simplified)"
 
 # 3. 校验结果（有硬错误时退出码为 1）
 subglot validate talk.zh.srt
+
+# 4. 合并双语字幕（译文在上，原文在下）
+subglot merge talk.zh.srt talk.srt -o talk.bilingual.srt
 ```
 
-或一步到位：
+或一步到位生成源字幕、翻译字幕与双语字幕：
 
 ```bash
-subglot pipeline talk.mp4 -o talk.zh.srt --model base --target "Chinese (Simplified)"
+subglot pipeline talk.mp4 --bilingual --target "Chinese (Simplified)"
 ```
 
 用自托管或第三方模型？指定 `--base-url` 即可：

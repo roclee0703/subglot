@@ -49,12 +49,15 @@ subglot translate talk.srt -o talk.zh.srt --target "Chinese (Simplified)"
 
 # 3. QA-check the result (exit code 1 if there are hard errors)
 subglot validate talk.zh.srt
+
+# 4. Merge source and translation into bilingual subtitles
+subglot merge talk.zh.srt talk.srt -o talk.bilingual.srt
 ```
 
-Or in one shot:
+Or in one shot (with bilingual track included):
 
 ```bash
-subglot pipeline talk.mp4 -o talk.zh.srt --model base --target "Chinese (Simplified)"
+subglot pipeline talk.mp4 --bilingual --target "Chinese (Simplified)"
 ```
 
 Using a self-hosted or third-party model? Point `--base-url` at it:

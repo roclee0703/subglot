@@ -77,6 +77,20 @@ def cmd_validate(args: argparse.Namespace) -> int:
     return 1 if any(i.level == "error" for i in issues) else 0
 
 
+def cmd_merge(args: argparse.Namespace) -> int:
+    from .merge import merge_cues
+
+    primary = parse_srt(Path(args.primary))
+    secondary = parse_srt(Path(args.secondary))
+    merged = merge_cues(primary, secondary, layout=args.layout)
+    out = Path(args.output) if args.output else Path(args.primary).with_name(
+        Path(args.primary).stem + ".bilingual.srt"
+    )
+    write_srt(merged, out)
+    print(f"merged {len(merged)} bilingual cues -> {out}")
+    return 0
+
+
 def cmd_pipeline(args: argparse.Namespace) -> int:
     """transcribe -> translate -> validate in one shot."""
     try:
@@ -114,6 +128,19 @@ def cmd_pipeline(args: argparse.Namespace) -> int:
     out = Path(args.output) if args.output else Path(args.media).with_suffix(".translated.srt")
     write_srt(out_cues, out)
     print(f"translated {len(cues)} cues -> {out}")
+
+    if getattr(args, "bilingual", False):
+        from .merge import merge_cues
+
+        bilingual_cues = merge_cues(out_cues, cues, layout=args.bilingual_layout)
+        bilingual_out = (
+            Path(args.bilingual_output)
+            if args.bilingual_output
+            else Path(args.media).with_suffix(".bilingual.srt")
+        )
+        write_srt(bilingual_cues, bilingual_out)
+        print(f"wrote {len(bilingual_cues)} bilingual cues -> {bilingual_out}")
+
     issues = validate(out_cues, max_units=args.max_units)
     print(report(issues))
     return 1 if any(i.level == "error" for i in issues) else 0
@@ -152,6 +179,18 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--max-lines", type=int, default=2)
     p.set_defaults(func=cmd_validate)
 
+    p = sub.add_parser("merge", help="merge two SRT files into a bilingual subtitle track")
+    p.add_argument("primary", help="primary subtitle track (e.g. translated SRT)")
+    p.add_argument("secondary", help="secondary subtitle track (e.g. source SRT)")
+    p.add_argument("-o", "--output", help="output bilingual SRT path")
+    p.add_argument(
+        "--layout",
+        choices=["primary-first", "secondary-first"],
+        default="primary-first",
+        help="order of lines: primary-first (target on top) or secondary-first (source on top)",
+    )
+    p.set_defaults(func=cmd_merge)
+
     p = sub.add_parser("pipeline", help="media -> transcribe -> translate -> validate")
     p.add_argument("media", help="video or audio file")
     p.add_argument("-o", "--output", help="translated SRT path")
@@ -170,6 +209,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--api-key-env", default="OPENAI_API_KEY")
     p.add_argument("--batch", type=int, default=20)
     p.add_argument("--max-units", type=float, default=20.0)
+    p.add_argument("--bilingual", action="store_true", help="also generate a merged bilingual SRT file")
+    p.add_argument(
+        "--bilingual-layout",
+        choices=["primary-first", "secondary-first"],
+        default="primary-first",
+        help="order of bilingual lines (default: primary-first)",
+    )
+    p.add_argument("--bilingual-output", help="custom output path for the bilingual SRT file")
     p.set_defaults(func=cmd_pipeline)
 
     return parser
